@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Palette Generator</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #fafafa;
+    font-family: system-ui, sans-serif;
+  }
+  h1 {
+    margin-bottom: 4px;
+    color: #222;
+  }
+  p {
+    margin-top: 0;
+    color: #777;
+    font-size: 14px;
+  }
+  .palette {
+    display: flex;
+    width: 90%;
+    max-width: 900px;
+    height: 320px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    margin-top: 20px;
+  }
+  .swatch {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: flex 0.2s ease;
+  }
+  .swatch:hover { flex: 1.3; }
+  .hex {
+    background: rgba(0,0,0,0.35);
+    color: #fff;
+    font-family: monospace;
+    font-size: 14px;
+    padding: 8px 0;
+    width: 100%;
+    text-align: center;
+  }
+  .copied {
+    position: absolute;
+    top: 16px;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .copied.show { opacity: 1; }
+  button {
+    margin-top: 26px;
+    border: none;
+    background: #222;
+    color: #fff;
+    padding: 12px 28px;
+    border-radius: 30px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  button:hover { background: #000; }
+</style>
+</head>
+<body>
+  <h1>🎨 Color Palette Generator</h1>
+  <p>Click a swatch to copy its hex code</p>
+  <div class="palette" id="palette"></div>
+  <button onclick="generatePalette()">Generate New Palette</button>
+
+  <script>
+    const palette = document.getElementById('palette');
+
+    function randomColor() {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+
+    function generatePalette() {
+      palette.innerHTML = '';
+      for (let i = 0; i < 5; i++) {
+        const color = randomColor();
+        const swatch = document.createElement('div');
+        swatch.className = 'swatch';
+        swatch.style.background = color;
+        swatch.innerHTML = `
+          <span class="copied">Copied!</span>
+          <span class="hex">${color}</span>
+        `;
+        swatch.addEventListener('click', () => {
+          navigator.clipboard.writeText(color);
+          const tag = swatch.querySelector('.copied');
+          tag.classList.add('show');
+          setTimeout(() => tag.classList.remove('show'), 800);
+        });
+        palette.appendChild(swatch);
+      }
+    }
+
+    generatePalette();
+  </script>
+</body>
+</html>
